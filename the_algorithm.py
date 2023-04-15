@@ -17,7 +17,7 @@ def path_search(
 ) -> list[tuple[list[int], int]]:
     """
     search all path and sort by cost.
-    if start node and end node are the same, it will return a path with only the end node.
+    if start node and end node are the same, it will return a path with only the end node. -> [([end], 0)]
 
     :param start: start node number
     :param end: end(target) node number
@@ -28,6 +28,9 @@ def path_search(
     :return: all path sorted by cost. \
      return like this: [(path1, cost1), (path2, cost2), ...]
     """
+    if start == end:
+        return [([end], 0)]
+
     return _cost_sort(
         _search_path(target=end, path=[start], map_nodes=node_map), cost_map=cost_map
     )
@@ -36,9 +39,6 @@ def path_search(
 def _search_path(
         target: int, path: list[int], map_nodes: dict[int: list[int]]
 ) -> list[list[int]]:
-    if path[0] == target:
-        return [path]
-
     next_nodes = list(set(map_nodes[path[-1]]) - set(path))
     if not next_nodes:
         return [[]]
