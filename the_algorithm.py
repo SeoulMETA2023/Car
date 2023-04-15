@@ -13,10 +13,23 @@ TEST MAP
 
 
 def path_search(
-        start: int, end: int, map_nodes: dict[int: list[int]], cost_map: dict[str: int]
+        start: int, end: int, node_map: dict[int: list[int]], cost_map: dict[str: int]
 ) -> list[tuple[list[int], int]]:
+    """
+    search all path and sort by cost.
+    if start node and end node are the same, it will return a path with only the end node.
+
+    :param start: start node number
+    :param end: end(target) node number
+    :param node_map: node map which value nodes are connected to key node. \
+     you must write like this: {node: [node1, node2, ...]}
+    :param cost_map: node-to-node distance cost. \
+     you must write like this: {"n-N": cost} (n: small node number, N: big node number)
+    :return: all path sorted by cost. \
+     return like this: [(path1, cost1), (path2, cost2), ...]
+    """
     return _cost_sort(
-        _search_path(target=end, path=[start], map_nodes=map_nodes), cost_map=cost_map
+        _search_path(target=end, path=[start], map_nodes=node_map), cost_map=cost_map
     )
 
 
@@ -103,5 +116,5 @@ if __name__ == "__main__":
         "1-12": 1,
     }
 
-    routes = path_search(start=9, end=4, map_nodes=test_map, cost_map=test_cost)
+    routes = path_search(start=9, end=4, node_map=test_map, cost_map=test_cost)
     print(routes)
