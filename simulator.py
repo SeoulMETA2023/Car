@@ -49,37 +49,47 @@ nodes = {
     2: Node((341, 601), [1, 3]),
     3: Node((281, 602), [2, 4]),
     4: Node((283, 438), [3, 5]),
-    5: Node((277, 331), [4, 6]),
+    5: Node((277, 331), [4, 6, 21]),
     6: Node((455, 339), [5, 7]),
     7: Node((456, 392), [6, 8]),
-    8: Node((620, 385), [7, 9]),
-    9: Node((801, 389), [8, 10]),
+    8: Node((620, 385), [7, 14]),
+    9: Node((801, 389), [14, 10]),
     10: Node((935, 391), [9, 11]),
     11: Node((967, 430), [10, 12]),
     12: Node((969, 494), [11, 13]),
-    13: Node((967, 555), [12, 0])
+    13: Node((967, 555), [12, 0]),
+    14: Node((727, 387), [8, 9, 15]),
+    15: Node((712, 274), [14, 16]),
+    16: Node((734, 191), [15, 17]),
+    17: Node((603, 183), [16, 18]),
+    18: Node((477, 183), [17, 19]),
+    19: Node((446, 288), [18, 20]),
+    20: Node((354, 299), [19, 21]),
+    21: Node((316, 308), [20, 5])
 }
 
 node_map = get_node_map(nodes)
 cost_map = get_cost_map(nodes)
-
 print(node_map)
 print(cost_map)
+
+font = pygame.font.SysFont("arial", 20, True, False)
 
 start = 1
 end = 4
 paths = path_search(start, end, node_map, cost_map)
 print(paths)
 
-colors = [(0, 255, 0), (0, 0, 255), (0, 255, 255), (255, 0, 255), (255, 255, 0), (255, 0, 0)]
+n = 0
 
 running = True
 while running:
-    dt = clock.tick(60)
+    clock.tick(60)
+    mouse_pos = pygame.mouse.get_pos()
 
     display.fill((255, 255, 255))
-
-    display.blit(school_image, ((DISPLAY_SIZE[0] / 2) - (school_image.get_width() / 2), (DISPLAY_SIZE[1] / 2) - (school_image.get_height() / 2)))
+    display.blit(school_image, (
+    (DISPLAY_SIZE[0] / 2) - (school_image.get_width() / 2), (DISPLAY_SIZE[1] / 2) - (school_image.get_height() / 2)))
 
     for start_node in nodes.values():
         for end_node_n in start_node.connected_nodes:
@@ -91,9 +101,24 @@ while running:
         pygame.draw.circle(display, (255, 255, 255), node.pos, 17)
         pygame.draw.circle(display, (0, 0, 0), node.pos, 14)
 
-    for path, color in zip(paths[::-1], colors[len(paths)-1::-1]):
-        for i in range(1, len(path[0])):
-            pygame.draw.line(display, color, nodes[path[0][i - 1]].pos, nodes[path[0][i]].pos, 10)
+    for path, _ in paths:
+        for i in range(1, len(path)):
+            pygame.draw.circle(display, (0, 80, 0), nodes[path[i - 1]].pos, 10)
+            pygame.draw.circle(display, (0, 80, 0), nodes[path[i]].pos, 10)
+            pygame.draw.line(display, (0, 80, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 10)
+
+    path = paths[n][0]
+    for i in range(1, len(path)):
+        pygame.draw.circle(display, (0, 230, 0), nodes[path[i - 1]].pos, 10)
+        pygame.draw.circle(display, (0, 230, 0), nodes[path[i]].pos, 10)
+        pygame.draw.line(display, (0, 230, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 10)
+
+    for node_n, node in nodes.items():
+        node_pos = node.pos
+        if ((mouse_pos[0] - node_pos[0]) ** 2 + (mouse_pos[1] - node_pos[1]) ** 2) ** 0.5 <= 40:
+            text_image = font.render(str(node_n), True, (255, 255, 255))
+            display.blit(text_image, (
+                node_pos[0] - (text_image.get_width() / 2), (node_pos[1] - (text_image.get_height() / 2))))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -101,6 +126,11 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 print(f"POS: {event.pos}")
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                n += 1 if n < len(paths) - 1 else 0
+            if event.key == pygame.K_LEFT:
+                n -= 1 if 0 < n else 0
     pygame.display.update()
 
 pygame.quit()
