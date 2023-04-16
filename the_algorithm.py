@@ -1,4 +1,4 @@
-""""
+"""
 author: Piop2
 
 path finding algorithm for self-driving car's navigation system
@@ -9,12 +9,14 @@ TEST MAP
 #12 ############# 6 #
 #11 #10 # 9 # 8 # 7 #
 #####################
+start node: 9
+end node: 4
 """
 
 
 def path_search(
         start: int, end: int, node_map: dict[int: list[int]], cost_map: dict[str: int]
-) -> list[tuple[list[int], int]]:
+) -> list[tuple[list[int], float]]:
     """
     search all path and sort by cost.
     if start node and end node are the same, it will return a path with only the end node. -> [([end], 0)]
@@ -61,8 +63,8 @@ def _search_path(
     return all_paths
 
 
-def _cost_sort(paths: list[list[int]], cost_map: dict[str:int]):
-    def get_path_cost(path: list[int]) -> int:
+def _cost_sort(paths: list[list[int]], cost_map: dict[str:float]):
+    def get_path_cost(path: list[int]) -> float:
         # result = 0
         # for i in range(0, len(path) - 2):
         #     result += dict[f"{path[i]}-{path[i + 1]}"]
@@ -70,7 +72,7 @@ def _cost_sort(paths: list[list[int]], cost_map: dict[str:int]):
         return sum(
             map(
                 lambda x: cost_map[_get_cost_map_key(node1=path[x], node2=path[x + 1])],
-                range(0, len(path) - 2),
+                range(0, len(path) - 1),
             )
         )
 
