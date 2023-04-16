@@ -47,25 +47,38 @@ nodes = {
     0: Node((647, 558), [1, 13]),
     1: Node((334, 561), [0, 2]),
     2: Node((341, 601), [1, 3]),
-    3: Node((281, 602), [2, 4]),
-    4: Node((283, 438), [3, 5]),
-    5: Node((277, 331), [4, 6, 21]),
+    3: Node((281, 602), [2, 22]),
+    4: Node((280, 410), [22, 5, 23]),
+    5: Node((277, 331), [4, 6, 21, 25]),
     6: Node((455, 339), [5, 7]),
     7: Node((456, 392), [6, 8]),
     8: Node((620, 385), [7, 14]),
     9: Node((801, 389), [14, 10]),
     10: Node((935, 391), [9, 11]),
-    11: Node((967, 430), [10, 12]),
+    11: Node((967, 430), [10, 12, 34]),
     12: Node((969, 494), [11, 13]),
-    13: Node((967, 555), [12, 0]),
+    13: Node((967, 555), [12, 0, 34]),
     14: Node((727, 387), [8, 9, 15]),
     15: Node((712, 274), [14, 16]),
-    16: Node((734, 191), [15, 17]),
+    16: Node((734, 191), [15, 17, 27]),
     17: Node((603, 183), [16, 18]),
     18: Node((477, 183), [17, 19]),
     19: Node((446, 288), [18, 20]),
     20: Node((354, 299), [19, 21]),
-    21: Node((316, 308), [20, 5])
+    21: Node((316, 308), [20, 5]),
+    22: Node((279, 504), [3, 4]),
+    23: Node((206, 408), [4, 24]),
+    24: Node((141, 406), [23]),
+    25: Node((208, 326), [26, 5]),
+    26: Node((151, 327), [25]),
+    27: Node((792, 178), [28, 16]),
+    28: Node((869, 170), [27, 29]),
+    29: Node((942, 169), [28, 30]),
+    30: Node((1005, 168), [29, 31]),
+    31: Node((1023, 236), [30, 32]),
+    32: Node((1036, 325), [31, 33]),
+    33: Node((1035, 399), [32, 34]),
+    34: Node((1031, 485), [33, 11, 13])
 }
 
 node_map = get_node_map(nodes)
@@ -75,8 +88,8 @@ print(cost_map)
 
 font = pygame.font.SysFont("arial", 20, True, False)
 
-start = 1
-end = 4
+start = 0
+end = 19
 paths = path_search(start, end, node_map, cost_map)
 print(paths)
 
@@ -105,13 +118,15 @@ while running:
         for i in range(1, len(path)):
             pygame.draw.circle(display, (0, 80, 0), nodes[path[i - 1]].pos, 10)
             pygame.draw.circle(display, (0, 80, 0), nodes[path[i]].pos, 10)
-            pygame.draw.line(display, (0, 80, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 10)
+            pygame.draw.line(display, (0, 80, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 8)
 
     path = paths[n][0]
     for i in range(1, len(path)):
         pygame.draw.circle(display, (0, 230, 0), nodes[path[i - 1]].pos, 10)
         pygame.draw.circle(display, (0, 230, 0), nodes[path[i]].pos, 10)
-        pygame.draw.line(display, (0, 230, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 10)
+        pygame.draw.line(display, (0, 230, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 8)
+    pygame.draw.circle(display, (0, 0, 230), nodes[start].pos, 8)
+    pygame.draw.circle(display, (230, 0, 0), nodes[end].pos, 8)
 
     for node_n, node in nodes.items():
         node_pos = node.pos
