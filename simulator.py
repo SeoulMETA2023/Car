@@ -87,7 +87,8 @@ cost_map = get_cost_map(nodes)
 print(node_map)
 print(cost_map)
 
-font = pygame.font.SysFont("arial", 20, True, False)
+node_font = pygame.font.SysFont("arial", 20, True, False)
+info_font = pygame.font.SysFont("arial", 40, True, False)
 
 path_start = 0
 path_end = 35
@@ -105,6 +106,11 @@ while running:
     display.fill((255, 255, 255))
     display.blit(school_image, (
     (DISPLAY_SIZE[0] / 2) - (school_image.get_width() / 2), (DISPLAY_SIZE[1] / 2) - (school_image.get_height() / 2)))
+
+    info_path_text = info_font.render(f"PATH: {selected_path_n + 1}/{len(paths)}", True, (255, 255, 255))
+    info_cost_text = info_font.render(f"COST: {int(paths[selected_path_n][1])}", True, (255, 255, 255))
+    display.blit(info_path_text, (50, 50))
+    display.blit(info_cost_text, (50, 50 + info_path_text.get_height()))
 
     for start_node in nodes.values():
         for end_node_n in start_node.connected_nodes:
@@ -133,7 +139,7 @@ while running:
     for node_n, node in nodes.items():
         node_pos = node.pos
         if ((mouse_pos[0] - node_pos[0]) ** 2 + (mouse_pos[1] - node_pos[1]) ** 2) ** 0.5 <= 40:
-            text_image = font.render(str(node_n), True, (255, 255, 255))
+            text_image = node_font.render(str(node_n), True, (255, 255, 255))
             display.blit(text_image, (
                 node_pos[0] - (text_image.get_width() / 2), (node_pos[1] - (text_image.get_height() / 2))))
 
