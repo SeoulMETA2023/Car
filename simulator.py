@@ -91,7 +91,7 @@ while running:
         pygame.draw.circle(display, (255, 255, 255), node.pos, 17)
         pygame.draw.circle(display, (0, 0, 0), node.pos, 14)
 
-    for path, color in zip(paths[::-1], colors[len(paths)::-1]):
+    for path, color in zip(paths[::-1], colors[len(paths)-1::-1]):
         for i in range(1, len(path[0])):
             pygame.draw.line(display, color, nodes[path[0][i - 1]].pos, nodes[path[0][i]].pos, 10)
 
