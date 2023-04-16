@@ -62,8 +62,8 @@ nodes = {
     15: Node((712, 274), [14, 16]),
     16: Node((734, 191), [15, 17, 27]),
     17: Node((603, 183), [16, 18]),
-    18: Node((477, 183), [17, 19]),
-    19: Node((446, 288), [18, 20]),
+    18: Node((477, 183), [17, 35]),
+    19: Node((446, 288), [35, 20]),
     20: Node((354, 299), [19, 21]),
     21: Node((316, 308), [20, 5]),
     22: Node((279, 504), [3, 4]),
@@ -78,7 +78,8 @@ nodes = {
     31: Node((1023, 236), [30, 32]),
     32: Node((1036, 325), [31, 33]),
     33: Node((1035, 399), [32, 34]),
-    34: Node((1031, 485), [33, 11, 13])
+    34: Node((1031, 485), [33, 11, 13]),
+    35: Node((472, 235), [18, 19])
 }
 
 node_map = get_node_map(nodes)
@@ -88,12 +89,13 @@ print(cost_map)
 
 font = pygame.font.SysFont("arial", 20, True, False)
 
-start = 0
-end = 19
-paths = path_search(start, end, node_map, cost_map)
-print(paths)
+path_start = 0
+path_end = 35
+paths = path_search(path_start, path_end, node_map, cost_map)
 
-n = 0
+selected_path_n = 0
+mode = "idle"
+
 
 running = True
 while running:
@@ -120,13 +122,13 @@ while running:
             pygame.draw.circle(display, (0, 80, 0), nodes[path[i]].pos, 10)
             pygame.draw.line(display, (0, 80, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 8)
 
-    path = paths[n][0]
+    path = paths[selected_path_n][0]
     for i in range(1, len(path)):
         pygame.draw.circle(display, (0, 230, 0), nodes[path[i - 1]].pos, 10)
         pygame.draw.circle(display, (0, 230, 0), nodes[path[i]].pos, 10)
         pygame.draw.line(display, (0, 230, 0), nodes[path[i - 1]].pos, nodes[path[i]].pos, 8)
-    pygame.draw.circle(display, (0, 0, 230), nodes[start].pos, 8)
-    pygame.draw.circle(display, (230, 0, 0), nodes[end].pos, 8)
+    pygame.draw.circle(display, (0, 0, 230), nodes[path_start].pos, 8)
+    pygame.draw.circle(display, (230, 0, 0), nodes[path_end].pos, 8)
 
     for node_n, node in nodes.items():
         node_pos = node.pos
@@ -140,12 +142,30 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                print(f"POS: {event.pos}")
+                if mode == "idle":
+                    print(f"POS: {event.pos}")
+                elif mode.startswith("set"):
+                    for node_n, node in nodes.items():
+                        node_pos = node.pos
+                        if ((mouse_pos[0] - node_pos[0]) ** 2 + (mouse_pos[1] - node_pos[1]) ** 2) ** 0.5 <= 17:
+                            if mode == "set start":
+                                path_start = node_n
+                            else:
+                                path_end = node_n
+                            paths = path_search(path_start, path_end, node_map, cost_map)
+                            mode = "idle"
+                            selected_path_n = 0
+                            break
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                n += 1 if n < len(paths) - 1 else 0
+                selected_path_n += 1 if selected_path_n < len(paths) - 1 else 0
             if event.key == pygame.K_LEFT:
-                n -= 1 if 0 < n else 0
+                selected_path_n -= 1 if 0 < selected_path_n else 0
+            if event.key == pygame.K_s:
+                mode = "set start"
+            if event.key == pygame.K_e:
+                mode = "set end"
     pygame.display.update()
 
 pygame.quit()
