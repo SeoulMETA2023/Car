@@ -97,7 +97,6 @@ paths = path_search(path_start, path_end, node_map, cost_map)
 selected_path_n = 0
 mode = "idle"
 
-
 running = True
 while running:
     clock.tick(60)
@@ -105,7 +104,8 @@ while running:
 
     display.fill((255, 255, 255))
     display.blit(school_image, (
-    (DISPLAY_SIZE[0] / 2) - (school_image.get_width() / 2), (DISPLAY_SIZE[1] / 2) - (school_image.get_height() / 2)))
+        (DISPLAY_SIZE[0] / 2) - (school_image.get_width() / 2),
+        (DISPLAY_SIZE[1] / 2) - (school_image.get_height() / 2)))
 
     info_path_text = info_font.render(f"PATH: {selected_path_n + 1}/{len(paths)}", True, (255, 255, 255))
     info_cost_text = info_font.render(f"COST: {int(paths[selected_path_n][1])}", True, (255, 255, 255))
@@ -148,7 +148,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                if mode == "idle":
+                if mode == "mark pos":
                     print(f"POS: {event.pos}")
                 elif mode.startswith("set"):
                     for node_n, node in nodes.items():
@@ -164,6 +164,10 @@ while running:
                             break
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                mode = "idle"
+            if event.key == pygame.K_p:
+                mode = "mark pos"
             if event.key == pygame.K_RIGHT:
                 selected_path_n += 1 if selected_path_n < len(paths) - 1 else 0
             if event.key == pygame.K_LEFT:
